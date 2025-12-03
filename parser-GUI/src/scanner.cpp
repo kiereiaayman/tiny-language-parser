@@ -5,7 +5,7 @@ static const unordered_map<string, TokenType> reservedWords = {
     {"if", TokenType::IF},
     {"then", TokenType::THEN},
     {"end", TokenType::END},
-    {"else", TokenType::ELSE},
+    //{"else", TokenType::ELSE},
     {"repeat", TokenType::REPEAT},
     {"until", TokenType::UNTIL},
     {"read", TokenType::READ},
@@ -30,8 +30,8 @@ string tokenToString(TokenType t)
         return "IF";
     case TokenType::THEN:
         return "THEN";
-    case TokenType::ELSE:
-        return "ELSE";
+    //case TokenType::ELSE:
+    //    return "ELSE";
     case TokenType::END:
         return "END";
     case TokenType::REPEAT:
