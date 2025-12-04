@@ -1,5 +1,6 @@
 #include "scanner.hpp"
-using namespace std;
+#include <fstream>
+#include <iostream>
 
 static const unordered_map<string, TokenType> reservedWords = {
     {"if", TokenType::IF},
@@ -174,7 +175,7 @@ TokenType getToken(ifstream &source, string &tokenString, int &lineNumber)
             if (!closed)
             {
                 cerr << "Error: Unterminated comment starting at line "
-                          << commentStartLine << "\n";
+                     << commentStartLine << "\n";
                 tokenString = "{";
                 return TokenType::ERROR;
             }
