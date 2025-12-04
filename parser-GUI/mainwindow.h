@@ -17,7 +17,13 @@ public:
     MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
 
+private slots:
+    void on_BrowseBtn_clicked();
+
+    void on_clearButton_clicked();
+
 private:
     Ui::MainWindow *ui;
+    QString filePath;
 };
 #endif // MAINWINDOW_H
