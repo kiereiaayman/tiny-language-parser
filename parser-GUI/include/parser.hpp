@@ -1,6 +1,6 @@
 #pragma once
 
-#include "TokenStream.hpp"
+#include "tokenStream.hpp"
 #include "ASTNode.hpp"
 
 class Parser
@@ -16,6 +16,12 @@ private:
     ASTNode *parseStmtSeq();
     ASTNode *parseStatement();
     ASTNode *parseExpression();
+    ASTNode *parseSimpleExpression();
     ASTNode *parseTerm();
     ASTNode *parseFactor();
+    ASTNode *parseIfStatement();
+    ASTNode *parseRepeatStatement();
+    ASTNode *parseAssignStatement();
+    ASTNode *parseReadStatement();
+    ASTNode *parseWriteStatement();
 };
