@@ -1,11 +1,12 @@
 #include "scanner.hpp"
-using namespace std;
+#include <fstream>
+#include <iostream>
 
 static const unordered_map<string, TokenType> reservedWords = {
     {"if", TokenType::IF},
     {"then", TokenType::THEN},
     {"end", TokenType::END},
-    //{"else", TokenType::ELSE},
+    {"else", TokenType::ELSE},
     {"repeat", TokenType::REPEAT},
     {"until", TokenType::UNTIL},
     {"read", TokenType::READ},
@@ -30,8 +31,8 @@ string tokenToString(TokenType t)
         return "IF";
     case TokenType::THEN:
         return "THEN";
-    //case TokenType::ELSE:
-    //    return "ELSE";
+    case TokenType::ELSE:
+        return "ELSE";
     case TokenType::END:
         return "END";
     case TokenType::REPEAT:
@@ -174,7 +175,7 @@ TokenType getToken(ifstream &source, string &tokenString, int &lineNumber)
             if (!closed)
             {
                 cerr << "Error: Unterminated comment starting at line "
-                          << commentStartLine << "\n";
+                     << commentStartLine << "\n";
                 tokenString = "{";
                 return TokenType::ERROR;
             }

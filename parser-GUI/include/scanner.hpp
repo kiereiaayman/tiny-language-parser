@@ -1,5 +1,7 @@
 #ifndef SCANNER_HPP
 #define SCANNER_HPP
+#include <string>
+#include <unordered_map>
 #include "common.hpp"
 #include "tokenType.hpp"
 

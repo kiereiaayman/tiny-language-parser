@@ -4,8 +4,8 @@ enum class TokenType
 {
     IF,
     THEN,
-    ELSE,
     END,
+    ELSE,
     REPEAT,
     UNTIL,
     READ,

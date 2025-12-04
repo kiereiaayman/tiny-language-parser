@@ -1,13 +1,16 @@
-#include "../include/parser.hpp"
+#include "parser.hpp"
+#include <stdexcept>
 
 ASTNode *Parser::parseProgram() { return parseStmtSeq(); }
 
 Parser::Parser(TokenStream &stream) : ts(stream) {}
 
-ASTNode *Parser::parseStmtSeq() {
+ASTNode *Parser::parseStmtSeq()
+{
   ASTNode *statementSequence = parseStatement();
 
-  while (ts.match(TokenType::SEMICOLON)) {
+  while (ts.match(TokenType::SEMICOLON))
+  {
     // Prevent empty statements like ";;"
     if (ts.peek().type == TokenType::SEMICOLON)
       throw std::runtime_error("Unexpected ';' - empty statement");
@@ -18,9 +21,11 @@ ASTNode *Parser::parseStmtSeq() {
 }
 
 // const Token &peek(int offset = 0) const;
-ASTNode *Parser::parseStatement() {
+ASTNode *Parser::parseStatement()
+{
   Token currToken = ts.peek(0);
-  switch (currToken.type) {
+  switch (currToken.type)
+  {
   case TokenType::IF:
     return parseIfStatement();
     break;
@@ -46,7 +51,8 @@ ASTNode *Parser::parseStatement() {
   }
 }
 
-ASTNode *Parser::parseIfStatement() {
+ASTNode *Parser::parseIfStatement()
+{
   ts.expect(TokenType::IF);
 
   ASTNode *ifNode = new ASTNode(ASTNodeType::IfStmt, "if");
@@ -59,7 +65,8 @@ ASTNode *Parser::parseIfStatement() {
   ASTNode *thenBlock = parseStmtSeq();
   ifNode->children.push_back(thenBlock);
 
-  if (ts.peek().type == TokenType::ELSE) {
+  if (ts.peek().type == TokenType::ELSE)
+  {
     ts.advance();
     ASTNode *elseBlock = parseStmtSeq();
     ifNode->children.push_back(elseBlock);
@@ -69,7 +76,8 @@ ASTNode *Parser::parseIfStatement() {
   return ifNode;
 }
 
-ASTNode *Parser::parseRepeatStatement() {
+ASTNode *Parser::parseRepeatStatement()
+{
   ts.expect(TokenType::REPEAT);
 
   ASTNode *repeatNode = new ASTNode(ASTNodeType::RepeatStmt, "repeatStmt");
@@ -85,7 +93,8 @@ ASTNode *Parser::parseRepeatStatement() {
   return repeatNode;
 }
 
-ASTNode *Parser::parseAssignStatement() {
+ASTNode *Parser::parseAssignStatement()
+{
   Token identifier = ts.peek(0);
   ts.expect(TokenType::IDENTIFIER);
 
@@ -99,7 +108,8 @@ ASTNode *Parser::parseAssignStatement() {
   return AssignNode;
 }
 
-ASTNode *Parser::parseReadStatement() {
+ASTNode *Parser::parseReadStatement()
+{
   ts.expect(TokenType::READ);
   Token identifier = ts.peek(0);
   ts.expect(TokenType::IDENTIFIER);
@@ -107,17 +117,20 @@ ASTNode *Parser::parseReadStatement() {
   return readNode;
 }
 
-ASTNode *Parser::parseWriteStatement() {
+ASTNode *Parser::parseWriteStatement()
+{
   ts.expect(TokenType::WRITE);
   ASTNode *WriteNode = new ASTNode(ASTNodeType::WriteStmt, "writeStmt");
   WriteNode->children.push_back(parseExpression());
   return WriteNode;
 }
 
-ASTNode *Parser::parseExpression() {
+ASTNode *Parser::parseExpression()
+{
   ASTNode *left = parseSimpleExpression();
 
-  if (ts.match(TokenType::LESSTHAN) || ts.match(TokenType::EQUAL)) {
+  if (ts.match(TokenType::LESSTHAN) || ts.match(TokenType::EQUAL))
+  {
     Token op = ts.peek(-1); // last consumed token
     ASTNode *right = parseSimpleExpression();
     ASTNode *node = new ASTNode(ASTNodeType::OP, op.value);
@@ -129,10 +142,12 @@ ASTNode *Parser::parseExpression() {
   return left;
 }
 
-ASTNode *Parser::parseSimpleExpression() {
+ASTNode *Parser::parseSimpleExpression()
+{
   ASTNode *left = parseTerm();
 
-  while (ts.match(TokenType::PLUS) || ts.match(TokenType::MINUS)) {
+  while (ts.match(TokenType::PLUS) || ts.match(TokenType::MINUS))
+  {
     Token op = ts.peek(-1);
     ASTNode *right = parseTerm();
     ASTNode *node = new ASTNode(ASTNodeType::OP, op.value);
@@ -144,10 +159,12 @@ ASTNode *Parser::parseSimpleExpression() {
   return left;
 }
 
-ASTNode *Parser::parseTerm() {
+ASTNode *Parser::parseTerm()
+{
   ASTNode *left = parseFactor();
 
-  while (ts.match(TokenType::MULT) || ts.match(TokenType::DIV)) {
+  while (ts.match(TokenType::MULT) || ts.match(TokenType::DIV))
+  {
     Token op = ts.peek(-1);
     ASTNode *right = parseFactor();
     ASTNode *node = new ASTNode(ASTNodeType::OP, op.value);
@@ -159,14 +176,20 @@ ASTNode *Parser::parseTerm() {
   return left;
 }
 
-ASTNode *Parser::parseFactor() {
+ASTNode *Parser::parseFactor()
+{
   Token t = ts.peek();
 
-  if (ts.match(TokenType::NUMBER)) {
+  if (ts.match(TokenType::NUMBER))
+  {
     return new ASTNode(ASTNodeType::Number, t.value);
-  } else if (ts.match(TokenType::IDENTIFIER)) {
+  }
+  else if (ts.match(TokenType::IDENTIFIER))
+  {
     return new ASTNode(ASTNodeType::Identifier, t.value);
-  } else if (ts.match(TokenType::OPENBRACKET)) {
+  }
+  else if (ts.match(TokenType::OPENBRACKET))
+  {
     ASTNode *node = parseExpression();
     ts.expect(TokenType::CLOSEDBRACKET);
     return node;
