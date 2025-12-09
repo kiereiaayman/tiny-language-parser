@@ -1,8 +1,9 @@
 #pragma once
 
 #include "tokenType.hpp"
+#include <string>
 
 using namespace std;
 
-string trim(const string &s);
-TokenType stringToTokenType(const std::string &s);
+string trim(string &s);
+TokenType stringToTokenType(string &s);

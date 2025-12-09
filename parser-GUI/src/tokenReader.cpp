@@ -1,4 +1,6 @@
-#include "tokenReader.hpp"
+#include "../include/tokenReader.hpp"
+#include "../include/common.hpp"
+#include <fstream>
 
 
 vector<Token> readTokensFromFile(const string &filename)
@@ -22,8 +24,10 @@ vector<Token> readTokensFromFile(const string &filename)
         if (commaPos == string::npos)
             throw runtime_error("Invalid token format at line " + to_string(lineNumber));
 
-        string lexeme = trim(line.substr(0, commaPos));
-        string typeStr = trim(line.substr(commaPos + 1));
+        string lexeme = (line.substr(0, commaPos));
+        lexeme = trim(lexeme);
+        string typeStr = (line.substr(commaPos + 1));
+        typeStr = trim(typeStr);
 
         Token t;
         t.value = lexeme;

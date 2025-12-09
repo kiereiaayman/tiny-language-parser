@@ -3,9 +3,9 @@
 #include <fstream>
 #include <string>
 #include <cctype>
-#include "common.hpp"
+#include "../include/common.hpp"
 
-string trim(const string &s)
+string trim(string &s)
 {
     size_t start = s.find_first_not_of(" \t\r\n");
     size_t end = s.find_last_not_of(" \t\r\n");
@@ -15,7 +15,7 @@ string trim(const string &s)
     return s.substr(start, end - start + 1);
 }
 
-TokenType stringToTokenType(const std::string &s)
+TokenType stringToTokenType(string &s)
 {
     static const std::unordered_map<std::string, TokenType> lut = {
         {"IF", TokenType::IF},

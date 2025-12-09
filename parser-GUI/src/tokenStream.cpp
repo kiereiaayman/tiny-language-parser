@@ -1,8 +1,8 @@
 #include <stdexcept>
 #include <string>
-#include "tokenStream.hpp"
-#include "common.hpp"
-#include "scanner.hpp"
+#include "../include/tokenStream.hpp"
+#include "../include/common.hpp"
+#include "../include/scanner.hpp"
 
 TokenStream::TokenStream(const vector<Token> &tokens)
     : tokens(tokens), index(0) {}

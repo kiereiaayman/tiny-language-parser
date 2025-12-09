@@ -25,7 +25,7 @@ set(PROJECT_SOURCES
         src/TreeLayout.cpp
 )
 
-set(EXTERNAL_HEADERS
+set(PROJECT_HEADERS
         include/ASTNode.hpp
         include/ASTNodeType.hpp
         include/common.hpp
@@ -41,6 +41,7 @@ if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
     qt_add_executable(parser-GUI
         MANUAL_FINALIZATION
         ${PROJECT_SOURCES}
+        ${PROJECT_HEADERS}
 
     )
 # Define target properties for Android with Qt 6 as:

@@ -1,6 +1,8 @@
 #pragma once
-#include "common.hpp"
 #include "tokenType.hpp"
+#include "string"
+
+using namespace std;
 
 struct Token
 {

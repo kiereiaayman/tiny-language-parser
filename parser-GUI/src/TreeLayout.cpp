@@ -1,4 +1,4 @@
-#include "TreeLayout.hpp"
+#include "../include/TreeLayout.hpp"
 #include <algorithm>
 
 void TreeLayout::calculateLayout(ASTNode *root) {
