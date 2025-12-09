@@ -17,6 +17,24 @@ set(PROJECT_SOURCES
         mainwindow.cpp
         mainwindow.h
         mainwindow.ui
+        src/common.cpp
+        src/parser.cpp
+        src/scanner.cpp
+        src/tokenReader.cpp
+        src/tokenStream.cpp
+        src/TreeLayout.cpp
+)
+
+set(EXTERNAL_HEADERS
+        include/ASTNode.hpp
+        include/ASTNodeType.hpp
+        include/common.hpp
+        include/parser.hpp
+        include/tokenReader.hpp
+        include/tokenStream.hpp
+        include/token.hpp
+        include/tokenType.hpp
+        include/TreeLayout.hpp
 )
 
 if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
