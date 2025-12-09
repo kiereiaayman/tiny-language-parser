@@ -20,6 +20,9 @@
 #include <QTextStream>
 #include <QVBoxLayout>
 #include <QPainter>
+#include <QRegularExpression>
+#include <QRegularExpressionMatch>
+#include <QTextBlock>
 
 static const int NODE_WIDTH = 110;
 static const int NODE_HEIGHT = 60;
@@ -39,11 +42,16 @@ MainWindow::~MainWindow()
 
 void MainWindow::on_BrowseBtn_clicked()
 {
-    filePath = QFileDialog::getOpenFileName(this, "Open Text File", "", "XML Files (*.txt);;All Files (*)");
+    filePath = QFileDialog::getOpenFileName(this, "Open Text File", "", "Text Files (*.txt);;All Files (*)");
     if (!filePath.isEmpty()) {
         // Load and display file content
         QFile file(filePath);
         if (file.open(QIODevice::ReadOnly | QIODevice::Text)) {
+            QTextCursor clearCursor(ui->fileContent->document());
+            clearCursor.select(QTextCursor::Document);
+            QTextCharFormat clearFormat;
+            clearFormat.setBackground(Qt::transparent);
+            clearCursor.setCharFormat(clearFormat);
             ui->filePathEdit->setText(filePath);
             QTextStream in(&file);
             ui->fileContent->setPlainText(in.readAll());
@@ -62,12 +70,21 @@ void MainWindow::on_clearButton_clicked()
     ui->fileContent->clear();
     ui->imageLabel_2->clear();
     ui->imageLabel_2->setText("                      Image wil be displayed here                  ");
+    QTextCursor clearCursor(ui->fileContent->document());
+    clearCursor.select(QTextCursor::Document);
+    QTextCharFormat clearFormat;
+    clearFormat.setBackground(Qt::transparent);
+    clearCursor.setCharFormat(clearFormat);
 }
 
 
 void MainWindow::on_parseBtn_clicked()
 {
     ui->imageLabel_2->clear();
+    if (filePath.isEmpty()){
+        QMessageBox::warning(this, "Error", "Please Select a file to start parsing.");
+        return;
+    }
     try {
         vector<Token> tokens = readTokensFromFile(filePath.toStdString());
         TokenStream ts(tokens);
@@ -77,11 +94,58 @@ void MainWindow::on_parseBtn_clicked()
             TreeLayout::calculateLayout(root);
             drawTree(root);
         }
-    } catch (std::exception e) {
-        QMessageBox::critical(this, "Error", e.what());
-        ui->imageLabel_2->setText("                      Image wil be displayed here                  ");
+    }catch (const std::runtime_error &e) {
+        QMessageBox::critical(this, "Parse Error", QString::fromStdString(e.what()));
+
+        QString msg = QString::fromStdString(e.what());
+
+        // Extract the line number
+        int line = -1;
+
+        // pattern: "line X"
+        QRegularExpression re("line\\s+(\\d+)");
+        QRegularExpressionMatch match = re.match(msg);
+
+        if (match.hasMatch()) {
+            line = match.captured(1).toInt();
+            highlightErrorLine(line);
+        }
+    }
+    catch (const std::exception &e) {
+        QMessageBox::critical(this, "Error", QString::fromStdString(e.what()));
     }
 }
+
+void MainWindow::highlightErrorLine(int lineNumber)
+{
+    if (lineNumber < 1) return;
+
+    QTextEdit *edit = ui->fileContent;
+
+    // Clear old formatting
+    QTextCursor clearCursor(edit->document());
+    clearCursor.select(QTextCursor::Document);
+    QTextCharFormat clearFormat;
+    clearFormat.setBackground(Qt::transparent);
+    clearCursor.setCharFormat(clearFormat);
+
+    // Get cursor for the target line
+    QTextCursor cursor(edit->document()->findBlockByLineNumber(lineNumber - 2));
+    if (!cursor.isNull()) {
+
+        QTextCharFormat fmt;
+        fmt.setBackground(Qt::yellow);
+        fmt.setForeground(Qt::black);
+
+        cursor.select(QTextCursor::LineUnderCursor);
+        cursor.setCharFormat(fmt);
+
+        // Scroll to the line
+        edit->setTextCursor(cursor);
+        edit->ensureCursorVisible();
+    }
+}
+
 
 void MainWindow::drawTree(ASTNode *root)
 {

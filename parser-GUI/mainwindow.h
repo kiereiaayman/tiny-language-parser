@@ -30,6 +30,8 @@ private slots:
 
     void drawNode(ASTNode *node);
 
+    void highlightErrorLine(int lineNumber);
+
     QString getNodeLabel(ASTNode *node);
 
 private:
